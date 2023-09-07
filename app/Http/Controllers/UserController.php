@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -18,7 +19,36 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        $users = User::all();
+
+        // Append the image URL to each user record
+        foreach ($users as $user) {
+            if ($user->image == null) {
+                $user->image_url = null;
+            } else {
+                $user->image_url = asset('storage/images/' . $user->image);
+            }
+        }
+
+        // Create an array to store the modified user data
+        $userData = [];
+
+        // Iterate through the users and build the modified data array
+        foreach ($users as $user) {
+            $userData[] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'gender' => $user->gender,
+                'image' => $user->image_url, // Use the generated image URL
+                'phone' => $user->phone,
+                'birthdate' => $user->birthdate,
+                'weight' => $user->weight,
+                'height' => $user->height,
+            ];
+        }
+
+        return $userData;
     }
 
     /**
@@ -30,10 +60,23 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['password'] = bcrypt($data['password']);
+
+        if ($request->has('image')) {
+            $imageData = $request->input('image');
+            $imageData = base64_decode($imageData);
+
+            // Generate a unique filename for the image
+            $imageName = uniqid() . '.png';
+
+            // Store the image file in a designated directory (e.g., storage/app/public/images)
+            Storage::disk('public')->put('images/' . $imageName, $imageData);
+
+            // Store the image filename in the database
+            $data['image'] = $imageName;
+        }
         $user = User::create($data);
 
-        return response($user,201);
+        return $user;
     }
 
     /**
@@ -46,12 +89,25 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        if ($user) {
+        if ($user->image != null) {
             // User found, do something with $user
-            return response($user,201);
+            $user->image_url = asset('storage/images/' . $user->image);
+            $userData = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'gender' => $user->gender,
+                'image' => $user->image_url, // Use the generated image URL
+                'phone' => $user->phone,
+                'birthdate' => $user->birthdate,
+                'weight' => $user->weight,
+                'height' => $user->height,
+            ];
+
+            return $userData;
         } else {
             // User not found, handle the error
-            return response()->json(['message' => 'User not found'], 404);
+            $user;
         }
     }
 
@@ -66,22 +122,22 @@ class UserController extends Controller
     {
         $data = $request->all();
         $user = User::find($id);
-    
+
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-    
+
         if (isset($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         }
-    
+
         // Update user data and save
         $user->fill($data);
         $user->save();
-    
-        return response()->json($user, 200); // Use 200 for successful updates
+
+        return $user; // Use 200 for successful updates
     }
-    
+
 
     /**
      * Remove the specified resource from storage.
@@ -96,9 +152,9 @@ class UserController extends Controller
         if ($user) {
             // Delete the user
             $user->delete();
-    
+
             // Respond with a success message or status code
-            return response()->json(['message' => 'User deleted successfully']);
+            return $user;
         } else {
             // Handle the case where the user is not found
             return response()->json(['message' => 'User not found'], 404);
