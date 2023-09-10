@@ -17,14 +17,8 @@ class AuthController extends Controller
 
     public function signup(Request $request)
     {
-        $data = $request->validated();
-        /** @var \App\Models\User $user */
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
-
+        $data = $request->all();
+        $user = User::create($data);
     
         return $user;
     }
