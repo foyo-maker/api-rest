@@ -65,8 +65,8 @@ class UserController extends Controller
             $imageData = $request->input('image');
             $imageData = base64_decode($imageData);
 
-            // Generate a unique filename for the image
-            $imageName = uniqid() . '.png';
+        // Generat a unique filename for the image
+            $imageName = uniqid() . '.jpg';
 
             // Store the image file in a designated directory (e.g., storage/app/public/images)
             Storage::disk('public')->put('images/' . $imageName, $imageData);
@@ -107,7 +107,7 @@ class UserController extends Controller
             return $userData;
         } else {
             // User not found, handle the error
-            $user;
+            return $user;
         }
     }
 
@@ -127,6 +127,21 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
+
+        if ($request->has('image')) {
+            $imageData = $request->input('image');
+            $imageData = base64_decode($imageData);
+
+        // Generat a unique filename for the image
+            $imageName = uniqid() . '.jpg';
+
+            // Store the image file in a designated directory (e.g., storage/app/public/images)
+            Storage::disk('public')->put('images/' . $imageName, $imageData);
+
+            // Store the image filename in the database
+            $data['image'] = $imageName;
+        }
+        
         if (isset($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         }
