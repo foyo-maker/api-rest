@@ -32,8 +32,12 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::apiResource('/users', UserController::class);
 
 Route::patch('/changePassword/{user_id}', [AuthController::class, 'updatePassword']);
-Route::get('/personalizedWorkout/{user_id}', [PersonalizedWorkoutController::class, 'show']);
 
+
+Route::patch('/rating/{user_id}', [AuthController::class, 'updateRate']);
+Route::get('/personalizedWorkout/{user_id}', [PersonalizedWorkoutController::class, 'show']);
+Route::get('/admins', [UserController::class, 'showAdmin']);
+Route::post('/admins', [UserController::class, 'storeAdmin']);
 Route::post('/personalizedWorkout', [PersonalizedWorkoutController::class, 'store']);
 Route::apiResource('/users', UserController::class);
 
