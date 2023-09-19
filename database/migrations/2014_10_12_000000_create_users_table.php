@@ -24,6 +24,8 @@ class CreateUsersTable extends Migration
             $table->string('birthdate')->nullable();
             $table->double('height')->nullable();
             $table->double('weight')->nullable();
+            
+            $table->double('rating')->nullable();
             $table->string('password')->default('123');
            
           

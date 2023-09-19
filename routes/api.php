@@ -6,9 +6,13 @@ use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\DiseaseRecipeController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\EventController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PersonalizedWorkoutController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,6 +29,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 });
 
+Route::post('/emailReset', [AuthController::class, 'authenticateEmail']);
+Route::patch('/resetPassword', [AuthController::class, 'resetPassword']);
 Route::post('/register', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -34,3 +40,18 @@ Route::get('/diseases', [DiseaseController::class,'index']);//cant apiResource m
 Route::get('/recipes', [RecipeController::class,'index']);//cant apiResource maybe i havent define other crud method in recipecontroller
 Route::get('/diseaserecipes', [DiseaseRecipeController::class,'index']);//testing only
 Route::get('/hospitals', [HospitalController::class,'index']);//cant apiResource maybe i havent define other crud method in recipecontroller
+
+
+Route::patch('/changePassword/{user_id}', [AuthController::class, 'updatePassword']);
+
+
+Route::patch('/rating/{user_id}', [AuthController::class, 'updateRate']);
+Route::get('/personalizedWorkout/{user_id}', [PersonalizedWorkoutController::class, 'show']);
+Route::get('/admins', [UserController::class, 'showAdmin']);
+Route::post('/admins', [UserController::class, 'storeAdmin']);
+Route::post('/personalizedWorkout', [PersonalizedWorkoutController::class, 'store']);
+Route::apiResource('/users', UserController::class);
+
+
+//event
+Route::apiResource('/events', EventController::class);
