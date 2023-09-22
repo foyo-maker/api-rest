@@ -1,7 +1,13 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SymptomController;
+use App\Http\Controllers\DiseaseController;
+use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\DiseaseRecipeController;
+use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventParticipantsController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +39,12 @@ Route::post('/register', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::apiResource('/users', UserController::class);
+Route::apiResource('/symptoms', SymptomController::class);
+Route::get('/diseases', [DiseaseController::class,'index']);//cant apiResource maybe i havent define other crud method in diseasecontroller
+Route::get('/recipes', [RecipeController::class,'index']);//cant apiResource maybe i havent define other crud method in recipecontroller
+Route::get('/diseaserecipes', [DiseaseRecipeController::class,'index']);//testing only
+Route::get('/hospitals', [HospitalController::class,'index']);//cant apiResource maybe i havent define other crud method in recipecontroller
+
 
 Route::patch('/changePassword/{user_id}', [AuthController::class, 'updatePassword']);
 
