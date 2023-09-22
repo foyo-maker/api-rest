@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -19,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::where('role', 0)->get();
 
         // Append the image URL to each user record
         foreach ($users as $user) {
@@ -45,6 +46,7 @@ class UserController extends Controller
                 'birthdate' => $user->birthdate,
                 'weight' => $user->weight,
                 'height' => $user->height,
+                'rating' => $user->rating,
             ];
         }
 
@@ -79,12 +81,78 @@ class UserController extends Controller
         return $user;
     }
 
+
+    public function storeAdmin(Request $request)
+    {
+        $data = $request->all();
+
+        if ($request->has('image')) {
+            $imageData = $request->input('image');
+            $imageData = base64_decode($imageData);
+
+        // Generat a unique filename for the image
+            $imageName = uniqid() . '.jpg';
+
+            // Store the image file in a designated directory (e.g., storage/app/public/images)
+            Storage::disk('public')->put('images/' . $imageName, $imageData);
+
+            // Store the image filename in the database
+            $data['image'] = $imageName;
+        }
+        $data['role'] = 1;
+        $user = User::create($data);
+
+        return $user;
+    }
+
+    
+
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
+
+         
+    public function showAdmin()
+    {
+
+        $users = User::where('role', 1)->get();
+
+        // Append the image URL to each user record
+        foreach ($users as $user) {
+            if ($user->image == null) {
+                $user->image_url = null;
+            } else {
+                $user->image_url = asset('storage/images/' . $user->image);
+            }
+        }
+
+        // Create an array to store the modified user data
+        $userData = [];
+
+        // Iterate through the users and build the modified data array
+        foreach ($users as $user) {
+            $userData[] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'gender' => $user->gender,
+                'image' => $user->image_url, // Use the generated image URL
+                'phone' => $user->phone,
+                'birthdate' => $user->birthdate,
+                'weight' => $user->weight,
+                'height' => $user->height,
+            ];
+        }
+
+        return $userData;
+
+    }
+     
     public function show($id)
     {
         $user = User::find($id);
@@ -120,6 +188,8 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        Log::info('Request Data: ' . json_encode($request->all()));
         $data = $request->all();
         $user = User::find($id);
 

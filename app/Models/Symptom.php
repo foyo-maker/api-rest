@@ -9,9 +9,9 @@ class Symptom extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['symptom_name','symptom_image','symptom_descriptionn'];
+    protected $fillable = ['symptom_name','symptom_image','symptom_description'];
 
-    public function diseases()
+    public function symptomdiseases()
     {
         return $this->belongsToMany(Disease::class,'disease_symptoms','disease_id','symptom_id')->withPivot('id');
     }

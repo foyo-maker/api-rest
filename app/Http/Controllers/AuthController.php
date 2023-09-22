@@ -24,11 +24,50 @@ class AuthController extends Controller
     public function signup(Request $request)
     {
         $data = $request->all();
+    
+        // Check if the email already exists in the database
+        $existingUser = User::where('email', $data['email'])->first();
+        
+        if ($existingUser) {
+            // Email already registered, return an error response
+            return response([
+                'message' => 'Email Address is already registered, please try another.'
+            ], 409);
+        }
+    
+        // If email is not found in the database, create a new user
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    
+        // Return the newly created user
+        return $user;
+    }
+    
+
+
+
+
+    public function updateRate(Request $request, $user_id)
+    {
+
+        // Find the user by user_id
+        $user = User::find($user_id);
+
+        // Check if the user exists
+        if (!$user) {
+            return response(['message' => 'User not found'], 404);
+        }
+
+        $data = $request->all();
+
+        // Update user data and save
+        $user->fill($data);
+        $user['rating'] = $data['rating'];
+        $user->save();
+
 
         return $user;
     }
@@ -44,22 +83,22 @@ class AuthController extends Controller
         if ($user) {
             $token = Str::random(64);
             DB::table('password_resets')->insert([
-    
+
                 'email' => $request->email,
                 'token' => $token,
                 'created_at' => Carbon::now(),
-    
+
             ]);
-    
-    
+
+
             $code = mt_rand(1000, 9999); // Generates a random 4-digit number
 
 
-            
+
             $body = "We are received a request to reset the password for HealthyLife+ associated
                     with " . $request->email . " . You Can Use The Below Code To Reset Your Password ";
             Mail::send('email-forget', ['body' => $body, 'code' => $code], function ($message) use ($request) {
-    
+
                 $message->from('noreply@gmail.com', 'HealthyLife+');
                 $message->to($request->email, 'HealthyLife+')
                     ->subject('Reset Password');
@@ -68,8 +107,8 @@ class AuthController extends Controller
             $userData = [
                 'code' =>  $code,
                 'email' => $user->email,
-               
-    
+
+
             ];
 
             return $userData;
@@ -82,7 +121,7 @@ class AuthController extends Controller
 
         return $user;
     }
-    
+
 
     public function resetPassword(Request $request)
     {
