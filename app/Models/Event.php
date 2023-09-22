@@ -15,8 +15,13 @@ class Event extends Model
         'image',
         'date',
         'address',
+        'status',
+        'user_id'
     ];
 
-
+    public function participants()
+    {
+        return $this->hasMany(EventParticipants::class, 'event_id');
+    }
 
 }

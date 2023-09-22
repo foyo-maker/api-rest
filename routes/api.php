@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventParticipantsController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,3 +41,12 @@ Route::apiResource('/users', UserController::class);
 
 //event
 Route::apiResource('/events', EventController::class);
+Route::apiResource('/eventsParticipants', EventParticipantsController::class);
+Route::get('/eventsParticipants/update-status/{user_id}', [EventParticipantsController::class, 'updateEventStatus']);
+Route::get('/eventsParticipants/displayUserHaventPart/{user_id}', [EventParticipantsController::class, 'displayUserHaventPart']);
+Route::get('/eventsParticipants/getEventParticipantsCount/{event_id}', [EventParticipantsController::class, 'getEventParticipantsCount']);
+
+Route::delete('/eventsParticipants/{event_id}/{user_id}', [EventParticipantsController::class, 'destroySpecific']);
+
+
+
