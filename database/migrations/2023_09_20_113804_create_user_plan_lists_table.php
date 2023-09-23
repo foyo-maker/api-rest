@@ -17,7 +17,12 @@ class CreateUserPlanListsTable extends Migration
             $table->unsignedBigInteger('user_plan_id');
             $table->unsignedBigInteger('workout_id');
             $table->string('name');
+            $table->unsignedBigInteger('user_id');
+            $table->text('description')->nullable();
             $table->string('gifimage')->nullable();
+            $table->double('calorie')->nullable();
+            $table->string('link')->nullable();
+            $table->string('bmi_status')->nullable();
             // Add other columns as needed
 
             $table->timestamps();
@@ -26,6 +31,7 @@ class CreateUserPlanListsTable extends Migration
         Schema::table('user_plan_lists', function (Blueprint $table) {
             $table->foreign('user_plan_id')->references('id')->on('user_plans')->onDelete('cascade');
             $table->foreign('workout_id')->references('id')->on('workouts')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

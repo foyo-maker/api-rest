@@ -65,11 +65,10 @@ Route::apiResource('/userPlans', UserPlanController::class);
 Route::get('/userPlans/{user_id}',[UserPlanController::class, 'show']);
 Route::post('/inserUserPlan',[UserPlanController::class, 'store']);
 Route::delete('deleteUserPlan/{id}',[UserPlanController::class, 'destroy']);
-
+Route::patch('/userPlans/{id}', [AuthController::class, 'update']);
 //userPlanWorkout
-Route::delete('deleteUserPlanList/{userPlanId}/{workoutId}', [UserPlanListController::class, 'destroyByWorkoutAndUserPlan']);
 Route::get('/userPlanList/{user_plan_id}',[UserPlanListController::class, 'show']);
-Route::delete('deleteUserPlanList/{user_plan_id}', [UserPlanListController::class, 'destroy']);
+Route::delete('deleteUserPlanList/{id}', [UserPlanListController::class, 'destroy']);
 Route::apiResource('/userPlanList', UserPlanListController::class);
 
 Route::apiResource('/workouts', WorkoutController::class);

@@ -70,6 +70,24 @@ class UserPlanController extends Controller
         return response()->json(['message' => 'User plan deleted'], 200);
     }
 
+    public function update(Request $request, $id)
+    {
+        // Find the UserPlan by its ID
+        $userPlan = UserPlan::find($id);
+
+        if (!$userPlan) {
+            return response()->json(['message' => 'User plan not found'], 404);
+        }
+
+        // Update the plan_name field with the new value from the request
+        $userPlan->plan_name = $request->input('plan_name'); // Replace 'plan_name' with the actual field name in your request
+
+        // Save the updated UserPlan
+        $userPlan->save();
+
+        return response()->json(['message' => 'User plan updated', 'userPlan' => $userPlan], 200);
+    }
+
     /**
      * Create a new user plan.
      *
