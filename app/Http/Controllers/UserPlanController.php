@@ -48,7 +48,7 @@ class UserPlanController extends Controller
     {
         $userPlan = UserPlan::create($request->all());
 
-        return response()->json($userPlan, 201);
+        return $userPlan;
     }
 
     /**

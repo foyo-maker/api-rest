@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserPlanList extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_plan_id', 'workout_id'];
+    protected $fillable = ['user_plan_id', 'workout_id','name','gifimage'];
 
     public function userPlan()
     {

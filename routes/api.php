@@ -8,7 +8,7 @@ use App\Http\Controllers\DiseaseRecipeController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventParticipantsController;
-
+use App\Http\Controllers\WorkoutController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -67,7 +67,9 @@ Route::post('/inserUserPlan',[UserPlanController::class, 'store']);
 Route::delete('deleteUserPlan/{id}',[UserPlanController::class, 'destroy']);
 
 //userPlanWorkout
-Route::apiResource('/userPlanList', UserPlanListController::class);
 Route::delete('deleteUserPlanList/{userPlanId}/{workoutId}', [UserPlanListController::class, 'destroyByWorkoutAndUserPlan']);
 Route::get('/userPlanList/{user_plan_id}',[UserPlanListController::class, 'show']);
 Route::delete('deleteUserPlanList/{user_plan_id}', [UserPlanListController::class, 'destroy']);
+Route::apiResource('/userPlanList', UserPlanListController::class);
+
+Route::apiResource('/workouts', WorkoutController::class);
