@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Symptom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class SymptomController extends Controller
 {
@@ -51,8 +52,8 @@ class SymptomController extends Controller
     {
         $data = $request->all();
 
-        if ($request->has('image')) {
-            $imageData = $request->input('image');
+        if ($request->has('symptom_image')) {
+            $imageData = $request->input('symptom_image');
             $imageData = base64_decode($imageData);
 
         // Generat a unique filename for the image
@@ -62,7 +63,7 @@ class SymptomController extends Controller
             Storage::disk('public')->put('images/' . $imageName, $imageData);
 
             // Store the image filename in the database
-            $data['image'] = $imageName;
+            $data['symptom_image'] = $imageName;
         }
         $symptom = Symptom::create($data);
 
@@ -80,7 +81,7 @@ class SymptomController extends Controller
         $symptom = Symptom::find($id);
 
         if ($symptom->image != null) {
-            // Symptom found, do something with $symptom
+            
             $symptom->imageUrl = asset('storage/images/' . $symptom->symptom_image);
             $symptomData = [
                 'id' => $symptom->id,
@@ -91,7 +92,7 @@ class SymptomController extends Controller
 
             return $symptomData;
         } else {
-            // User not found, handle the error
+         
             return $symptom;
         }
     }
@@ -112,8 +113,8 @@ class SymptomController extends Controller
             return response()->json(['message' => 'Symptom not found'], 404);
         }
 
-        if ($request->has('image')) {
-            $imageData = $request->input('image');
+        if ($request->has('symptom_image')) {
+            $imageData = $request->input('symptom_image');
             $imageData = base64_decode($imageData);
 
         // Generat a unique filename for the image
@@ -123,10 +124,10 @@ class SymptomController extends Controller
             Storage::disk('public')->put('images/' . $imageName, $imageData);
 
             // Store the image filename in the database
-            $data['image'] = $imageName;
+            $data['symptom_image'] = $imageName;
         }
 
-        // Update user data and save
+        // Update symptom data and save
         $symptom->fill($data);
         $symptom->save();
 

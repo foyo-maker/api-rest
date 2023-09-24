@@ -4,7 +4,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SymptomController;
 use App\Http\Controllers\DiseaseController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\DiseaseSymptomController;
 use App\Http\Controllers\DiseaseRecipeController;
+use App\Http\Controllers\DiseaseHospitalController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\EventController;
 
@@ -34,14 +36,20 @@ Route::patch('/resetPassword', [AuthController::class, 'resetPassword']);
 Route::post('/register', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
-Route::apiResource('/users', UserController::class);
+
 Route::apiResource('/symptoms', SymptomController::class);
-Route::get('/diseases', [DiseaseController::class,'index']);//cant apiResource maybe i havent define other crud method in diseasecontroller
-Route::get('/recipes', [RecipeController::class,'index']);//cant apiResource maybe i havent define other crud method in recipecontroller
-Route::get('/diseaserecipes', [DiseaseRecipeController::class,'index']);//testing only
-Route::get('/hospitals', [HospitalController::class,'index']);//cant apiResource maybe i havent define other crud method in recipecontroller
-
-
+Route::apiResource('/diseases', DiseaseController::class);
+Route::apiResource('/recipes', RecipeController::class);
+Route::apiResource('/hospitals', HospitalController::class);
+// Route::get('/diseaseSymptom', [DiseaseSymptomController::class,'index']);
+// Route::post('/diseaseSymptoms', [DiseaseSymptomController::class,'store']);
+Route::get('/matchedDiseaseSymptom/{disease_id}', [DiseaseSymptomController::class,'showDiseaseSymptom']);
+Route::get('/matchedSymptomDisease/{symptom_id}', [DiseaseSymptomController::class,'showSymptomDisease']);
+Route::get('/matchedDiseaseHospital/{disease_id}', [DiseaseHospitalController::class,'showDiseaseHospital']);
+Route::get('/matchedDiseaseRecipe/{disease_id}', [DiseaseRecipeController::class,'showDiseaseRecipe']);
+Route::apiResource('/diseaseSymptom', DiseaseSymptomController::class);
+Route::apiResource('/diseaseRecipe', DiseaseRecipeController::class);
+Route::apiResource('/diseaseHospital', DiseaseHospitalController::class);
 Route::patch('/changePassword/{user_id}', [AuthController::class, 'updatePassword']);
 
 
